@@ -14,8 +14,7 @@ class HiveKeys {
 
 class AppConstants {
   // Base URL — change to your deployed backend URL
-  static const baseUrl = 'http://10.0.2.2:5000/api/v1'; // Android emulator
-  // static const baseUrl = 'http://localhost:5000/api/v1'; // Web / iOS simulator
+  static const baseUrl = 'https://ub-ai.onrender.com/api/v1'; // Production Render API
 
   static const appName = 'OwlCoder AI';
   static const appTagline = 'Track • Practice • Learn • Plan • Crack Placements';
