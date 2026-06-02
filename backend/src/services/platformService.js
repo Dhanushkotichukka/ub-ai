@@ -16,10 +16,11 @@ const fetchLeetCodeStats = async (username) => {
             }
           }
           badges { name icon }
-          userContestRanking { rating attendedContestsCount globalRanking }
         }
-        userContestRankingHistory(username: $username) {
-          attended rating
+        userContestRanking(username: $username) {
+          rating
+          attendedContestsCount
+          globalRanking
         }
       }
     `;
