@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -266,7 +267,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   String _parseError(dynamic e) {
     if (e is DioException) {
       if (e.response != null && e.response?.data != null) {
-        final data = e.response?.data;
+        dynamic data = e.response?.data;
+        if (data is String) {
+          try {
+            data = jsonDecode(data);
+          } catch (_) {}
+        }
         if (data is Map && data.containsKey('message')) {
           if (data['requiresVerification'] == true) {
             return 'requiresVerification';
