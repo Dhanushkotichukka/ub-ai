@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:dio/dio.dart';
 import '../data/auth_repository.dart';
 import '../../../shared/models/user_model.dart';
 
@@ -263,19 +264,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   String _parseError(dynamic e) {
-    if (e is Exception && e.toString().contains('DioException')) {
-      try {
-        final dynamic dioError = e;
-        if (dioError.response != null && dioError.response?.data != null) {
-          final data = dioError.response?.data;
-          if (data is Map && data.containsKey('message')) {
-            if (data['requiresVerification'] == true) {
-              return 'requiresVerification';
-            }
-            return data['message'];
+    if (e is DioException) {
+      if (e.response != null && e.response?.data != null) {
+        final data = e.response?.data;
+        if (data is Map && data.containsKey('message')) {
+          if (data['requiresVerification'] == true) {
+            return 'requiresVerification';
           }
+          return data['message'].toString();
         }
-      } catch (_) {}
+      }
       return 'Network error. Check your connection.';
     }
     
