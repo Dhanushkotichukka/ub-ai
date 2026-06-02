@@ -10,12 +10,17 @@ const { awardXP } = require('../services/gamificationService');
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // ─── Helper: create mailer transporter ───────────────────────────
-const getTransporter = () => nodemailer.createTransport({
-  host: process.env.EMAIL_HOST,
-  port: parseInt(process.env.EMAIL_PORT),
-  secure: false,
-  auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
-});
+const getTransporter = () => {
+  if (!process.env.EMAIL_HOST || !process.env.EMAIL_USER) {
+    throw new Error('Email configuration is missing in environment variables');
+  }
+  return nodemailer.createTransport({
+    host: process.env.EMAIL_HOST,
+    port: parseInt(process.env.EMAIL_PORT) || 587,
+    secure: false,
+    auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
+  });
+};
 
 // ─── Helper: send token response ─────────────────────────────────
 const sendTokenResponse = (user, statusCode, res) => {
@@ -107,6 +112,9 @@ router.post('/register', async (req, res, next) => {
       });
     } catch (mailErr) {
       console.error('Email send failed:', mailErr.message);
+      // Delete the unverified user since we couldn't send the OTP
+      await User.deleteOne({ _id: user._id });
+      return res.status(500).json({ success: false, message: 'Failed to send verification email. Please try again later.' });
     }
 
     res.status(201).json({ success: true, message: 'Account created. OTP sent to email.', email: user.email });
@@ -210,6 +218,7 @@ router.post('/forgot-password', async (req, res, next) => {
       });
     } catch (mailErr) {
       console.error('Reset email failed:', mailErr.message);
+      return res.status(500).json({ success: false, message: 'Failed to send reset email. Please try again later.' });
     }
 
     res.json({ success: true, message: 'OTP sent to your email' });
