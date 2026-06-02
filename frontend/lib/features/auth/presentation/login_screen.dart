@@ -35,6 +35,8 @@ class _LoginScreenState extends State<LoginScreen> {
           } else {
             context.go('/home');
           }
+        } else if (state.requiresVerification && state.unverifiedEmail != null) {
+          context.go('/auth/verify-otp?email=${Uri.encodeComponent(state.unverifiedEmail!)}');
         } else if (state.status == AuthStatus.error && state.error != null) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.error!), backgroundColor: AppColors.danger),
@@ -151,7 +153,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           Align(
                             alignment: Alignment.centerRight,
                             child: TextButton(
-                              onPressed: () {},
+                              onPressed: () => context.go('/auth/forgot-password'),
                               child: const Text('Forgot Password?', style: TextStyle(color: AppColors.primary)),
                             ),
                           ),

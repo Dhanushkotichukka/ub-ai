@@ -7,6 +7,9 @@ import '../../features/auth/bloc/auth_bloc.dart';
 import '../../features/auth/presentation/splash_screen.dart';
 import '../../features/auth/presentation/login_screen.dart';
 import '../../features/auth/presentation/register_screen.dart';
+import '../../features/auth/presentation/otp_verification_screen.dart';
+import '../../features/auth/presentation/forgot_password_screen.dart';
+import '../../features/auth/presentation/reset_password_screen.dart';
 import '../../features/auth/presentation/onboarding/onboarding_screen.dart';
 import '../../features/home/presentation/home_shell.dart';
 import '../../features/home/presentation/home_screen.dart';
@@ -61,6 +64,24 @@ class AppRouter {
       GoRoute(
         path: '/auth/register',
         builder: (_, __) => const RegisterScreen(),
+      ),
+      GoRoute(
+        path: '/auth/verify-otp',
+        builder: (_, state) {
+          final email = state.uri.queryParameters['email'] ?? '';
+          return OtpVerificationScreen(email: email);
+        },
+      ),
+      GoRoute(
+        path: '/auth/forgot-password',
+        builder: (_, __) => const ForgotPasswordScreen(),
+      ),
+      GoRoute(
+        path: '/auth/reset-password',
+        builder: (_, state) {
+          final email = state.uri.queryParameters['email'] ?? '';
+          return ResetPasswordScreen(email: email);
+        },
       ),
 
       // ─── Onboarding ───────────────────────────────────────────

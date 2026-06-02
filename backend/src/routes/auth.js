@@ -109,7 +109,7 @@ router.post('/register', async (req, res, next) => {
       console.error('Email send failed:', mailErr.message);
     }
 
-    sendTokenResponse(user, 201, res);
+    res.status(201).json({ success: true, message: 'Account created. OTP sent to email.', email: user.email });
   } catch (err) {
     next(err);
   }
@@ -131,6 +131,10 @@ router.post('/login', async (req, res, next) => {
     const isMatch = await user.comparePassword(password);
     if (!isMatch) return res.status(401).json({ success: false, message: 'Invalid credentials' });
 
+    if (!user.isEmailVerified) {
+      return res.status(403).json({ success: false, message: 'Please verify your email first', requiresVerification: true, email: user.email });
+    }
+
     sendTokenResponse(user, 200, res);
   } catch (err) {
     next(err);
@@ -150,6 +154,26 @@ router.post('/verify-otp', async (req, res, next) => {
     user.emailOtp = undefined;
     user.emailOtpExpiry = undefined;
     await user.save();
+
+    // Send Welcome Email
+    try {
+      const transporter = getTransporter();
+      await transporter.sendMail({
+        from: process.env.EMAIL_FROM,
+        to: email,
+        subject: '🚀 Welcome to OwlCoder AI!',
+        html: `
+          <div style="font-family: Inter, sans-serif; max-width: 500px; margin: 0 auto; color: #333;">
+            <h2 style="color: #6C63FF;">You are all set! 🎉</h2>
+            <p>Welcome to <strong>OwlCoder AI</strong>, ${user.name || 'Developer'}!</p>
+            <p>Your email has been successfully verified. You can now log in and start tracking your DSA journey across all major platforms, get personalized AI coaching, and level up your skills.</p>
+            <p>Happy Coding! 🦉</p>
+          </div>
+        `,
+      });
+    } catch (mailErr) {
+      console.error('Welcome email failed:', mailErr.message);
+    }
 
     res.json({ success: true, message: 'Email verified successfully' });
   } catch (err) {

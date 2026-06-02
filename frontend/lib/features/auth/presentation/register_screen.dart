@@ -26,6 +26,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state.status == AuthStatus.authenticated) context.go('/onboarding');
+        if (state.requiresVerification && state.unverifiedEmail != null) {
+          context.go('/auth/verify-otp?email=${Uri.encodeComponent(state.unverifiedEmail!)}');
+        }
         if (state.status == AuthStatus.error && state.error != null) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.error!), backgroundColor: AppColors.danger));
         }

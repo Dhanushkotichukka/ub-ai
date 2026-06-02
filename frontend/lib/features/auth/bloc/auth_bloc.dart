@@ -26,6 +26,24 @@ class AuthEmailRegisterRequested extends AuthEvent {
   @override List<Object?> get props => [name, email, password];
 }
 
+class AuthVerifyOtpRequested extends AuthEvent {
+  final String email, otp;
+  const AuthVerifyOtpRequested(this.email, this.otp);
+  @override List<Object?> get props => [email, otp];
+}
+
+class AuthForgotPasswordRequested extends AuthEvent {
+  final String email;
+  const AuthForgotPasswordRequested(this.email);
+  @override List<Object?> get props => [email];
+}
+
+class AuthResetPasswordRequested extends AuthEvent {
+  final String email, otp, newPassword;
+  const AuthResetPasswordRequested(this.email, this.otp, this.newPassword);
+  @override List<Object?> get props => [email, otp, newPassword];
+}
+
 class AuthLogoutRequested extends AuthEvent {}
 
 class AuthProfileUpdated extends AuthEvent {
@@ -55,22 +73,42 @@ class AuthState extends Equatable {
   final AuthStatus status;
   final UserModel? user;
   final String? error;
+  final bool requiresVerification;
+  final String? unverifiedEmail;
+  final bool otpSent;
+  final bool passwordResetSuccess;
 
   const AuthState({
     this.status = AuthStatus.unknown,
     this.user,
     this.error,
+    this.requiresVerification = false,
+    this.unverifiedEmail,
+    this.otpSent = false,
+    this.passwordResetSuccess = false,
   });
 
   UserSettings? get settings => user?.settings;
 
-  AuthState copyWith({AuthStatus? status, UserModel? user, String? error}) => AuthState(
+  AuthState copyWith({
+    AuthStatus? status, 
+    UserModel? user, 
+    String? error, 
+    bool? requiresVerification, 
+    String? unverifiedEmail,
+    bool? otpSent,
+    bool? passwordResetSuccess,
+  }) => AuthState(
     status: status ?? this.status,
     user: user ?? this.user,
     error: error,
+    requiresVerification: requiresVerification ?? this.requiresVerification,
+    unverifiedEmail: unverifiedEmail ?? this.unverifiedEmail,
+    otpSent: otpSent ?? this.otpSent,
+    passwordResetSuccess: passwordResetSuccess ?? this.passwordResetSuccess,
   );
 
-  @override List<Object?> get props => [status, user, error];
+  @override List<Object?> get props => [status, user, error, requiresVerification, unverifiedEmail, otpSent, passwordResetSuccess];
 }
 
 // ─── BLoC ─────────────────────────────────────────────────────────
@@ -86,6 +124,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthGoogleSignInRequested>(_onGoogleSignIn);
     on<AuthEmailLoginRequested>(_onEmailLogin);
     on<AuthEmailRegisterRequested>(_onEmailRegister);
+    on<AuthVerifyOtpRequested>(_onVerifyOtp);
+    on<AuthForgotPasswordRequested>(_onForgotPassword);
+    on<AuthResetPasswordRequested>(_onResetPassword);
     on<AuthLogoutRequested>(_onLogout);
     on<AuthProfileUpdated>(_onProfileUpdated);
     on<AuthOnboardingStepCompleted>(_onOnboardingStep);
@@ -130,20 +171,54 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   Future<void> _onEmailLogin(AuthEmailLoginRequested event, Emitter<AuthState> emit) async {
-    emit(state.copyWith(status: AuthStatus.loading));
+    emit(state.copyWith(status: AuthStatus.loading, error: null, requiresVerification: false));
     try {
       final user = await _repo.loginWithEmail(event.email, event.password);
       emit(state.copyWith(status: AuthStatus.authenticated, user: user));
+    } catch (e) {
+      if (e.toString().contains('requiresVerification')) {
+        emit(state.copyWith(status: AuthStatus.error, error: 'Please verify your email first', requiresVerification: true, unverifiedEmail: event.email));
+      } else {
+        emit(state.copyWith(status: AuthStatus.error, error: _parseError(e)));
+      }
+    }
+  }
+
+  Future<void> _onEmailRegister(AuthEmailRegisterRequested event, Emitter<AuthState> emit) async {
+    emit(state.copyWith(status: AuthStatus.loading, error: null, requiresVerification: false));
+    try {
+      await _repo.registerWithEmail(event.name, event.email, event.password);
+      emit(state.copyWith(status: AuthStatus.unauthenticated, requiresVerification: true, unverifiedEmail: event.email));
     } catch (e) {
       emit(state.copyWith(status: AuthStatus.error, error: _parseError(e)));
     }
   }
 
-  Future<void> _onEmailRegister(AuthEmailRegisterRequested event, Emitter<AuthState> emit) async {
-    emit(state.copyWith(status: AuthStatus.loading));
+  Future<void> _onVerifyOtp(AuthVerifyOtpRequested event, Emitter<AuthState> emit) async {
+    emit(state.copyWith(status: AuthStatus.loading, error: null));
     try {
-      final user = await _repo.registerWithEmail(event.name, event.email, event.password);
-      emit(state.copyWith(status: AuthStatus.authenticated, user: user));
+      await _repo.verifyOtp(event.email, event.otp);
+      emit(state.copyWith(status: AuthStatus.unauthenticated, requiresVerification: false, error: 'Verified! Please log in.'));
+    } catch (e) {
+      emit(state.copyWith(status: AuthStatus.error, error: _parseError(e), requiresVerification: true));
+    }
+  }
+
+  Future<void> _onForgotPassword(AuthForgotPasswordRequested event, Emitter<AuthState> emit) async {
+    emit(state.copyWith(status: AuthStatus.loading, error: null, otpSent: false));
+    try {
+      await _repo.forgotPassword(event.email);
+      emit(state.copyWith(status: AuthStatus.unauthenticated, otpSent: true, unverifiedEmail: event.email));
+    } catch (e) {
+      emit(state.copyWith(status: AuthStatus.error, error: _parseError(e)));
+    }
+  }
+
+  Future<void> _onResetPassword(AuthResetPasswordRequested event, Emitter<AuthState> emit) async {
+    emit(state.copyWith(status: AuthStatus.loading, error: null, passwordResetSuccess: false));
+    try {
+      await _repo.resetPassword(event.email, event.otp, event.newPassword);
+      emit(state.copyWith(status: AuthStatus.unauthenticated, passwordResetSuccess: true, otpSent: false, error: 'Password reset successful!'));
     } catch (e) {
       emit(state.copyWith(status: AuthStatus.error, error: _parseError(e)));
     }
@@ -188,8 +263,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   String _parseError(dynamic e) {
+    if (e is Exception && e.toString().contains('DioException')) {
+      try {
+        final dynamic dioError = e;
+        if (dioError.response != null && dioError.response?.data != null) {
+          final data = dioError.response?.data;
+          if (data is Map && data.containsKey('message')) {
+            if (data['requiresVerification'] == true) {
+              return 'requiresVerification';
+            }
+            return data['message'];
+          }
+        }
+      } catch (_) {}
+      return 'Network error. Check your connection.';
+    }
+    
     final str = e.toString();
-    if (str.contains('DioException') || str.contains('SocketException')) {
+    if (str.contains('SocketException')) {
       return 'Network error. Check your connection.';
     }
     return str.replaceAll('Exception: ', '');
