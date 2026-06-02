@@ -129,28 +129,40 @@ const fetchGFGStats = async (username) => {
   }
 };
 
-// ─── CodeChef (Limited public data) ──────────────────────────────────────────
 const fetchCodeChefStats = async (username) => {
   if (!username) return null;
   try {
-    // CodeChef doesn't have a clean public API — use codechef-api
-    const { data } = await axios.get(
-      `https://codechef-api.vercel.app/handle/${username}`,
-      { timeout: 10000 }
-    );
+    const cheerio = require('cheerio');
+    const profileUrl = `https://www.codechef.com/users/${username}`;
+    
+    const { data } = await axios.get(profileUrl, {
+      headers: { 'User-Agent': 'Mozilla/5.0' },
+      timeout: 10000
+    });
 
-    if (!data?.success) return null;
+    const $ = cheerio.load(data);
+    
+    const ratingText = $(".rating-number").first().text().trim();
+    const rating = ratingText ? parseInt(ratingText) : 0;
+
+    const solvedText = $(".rating-data-section.problems-solved h3").eq(3).text();
+    const totalSolved = solvedText ? parseInt(solvedText.match(/\d+/)?.[0] || '0') : 0;
+
+    const maxRatingText = $(".rating-header .rating-data-section small").text().trim();
+    const maxRatingMatch = maxRatingText.match(/Highest Rating\s+(\d+)/i);
+    const highestRating = maxRatingMatch ? parseInt(maxRatingMatch[1]) : rating;
+    
+    const starsText = $(".rating-star").first().text().trim() || "";
+    const badges = starsText ? [starsText] : [];
 
     return {
       platform: 'codechef',
-      totalSolved: data?.problem_solved_count || 0,
-      rating: data?.currentRating || 0,
-      rank: data?.highestRating ? `${data.highestRating} peak` : '',
-      contestCount: data?.contest_participated_count || 0,
-      globalRank: data?.globalRank,
-      profileUrl: `https://www.codechef.com/users/${username}`,
-      avatarUrl: data?.profile,
-      badges: data?.stars ? [`${data.stars} ⭐`] : [],
+      totalSolved: totalSolved,
+      rating: rating,
+      rank: highestRating ? `${highestRating} peak` : '',
+      contestCount: 0,
+      profileUrl: profileUrl,
+      badges: badges,
     };
   } catch (err) {
     console.error(`[CodeChef] Failed to fetch stats for ${username}:`, err.message);
