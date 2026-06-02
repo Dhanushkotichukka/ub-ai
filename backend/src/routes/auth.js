@@ -117,7 +117,7 @@ router.post('/register', async (req, res, next) => {
       console.error('Email send failed:', mailErr.message);
       // Delete the unverified user since we couldn't send the OTP
       await User.deleteOne({ _id: user._id });
-      return res.status(500).json({ success: false, message: 'Failed to send verification email. Please try again later.' });
+      return res.status(500).json({ success: false, message: 'Failed to send verification email: ' + mailErr.message });
     }
 
     res.status(201).json({ success: true, message: 'Account created. OTP sent to email.', email: user.email });
