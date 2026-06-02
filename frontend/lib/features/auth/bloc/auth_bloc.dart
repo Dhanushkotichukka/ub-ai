@@ -76,7 +76,10 @@ class AuthState extends Equatable {
 // ─── BLoC ─────────────────────────────────────────────────────────
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthRepository _repo;
-  final _googleSignIn = GoogleSignIn(scopes: ['email', 'profile']);
+  final _googleSignIn = GoogleSignIn(
+    scopes: ['email', 'profile'],
+    clientId: '558989588027-matak7anvgcmfm6a8incnj0kkal1auc9.apps.googleusercontent.com',
+  );
 
   AuthBloc(this._repo) : super(const AuthState()) {
     on<AuthCheckRequested>(_onCheckRequested);
