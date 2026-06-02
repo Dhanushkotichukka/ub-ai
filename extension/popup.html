@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>OwlCoder AI Tracker</title>
+  <style>
+    :root {
+      --primary: #6C63FF;
+      --secondary: #F857A6;
+      --accent: #00D2FF;
+      --bg: #0F0F1A;
+      --card: #1E1E35;
+      --border: rgba(108, 99, 255, 0.15);
+      --text: #E0E0F0;
+      --text-secondary: #9090B0;
+      --success: #00E676;
+      --danger: #FF5252;
+    }
+
+    body {
+      width: 320px;
+      margin: 0;
+      padding: 16px;
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo-container {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--primary), #9C63FF);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      margin-right: 12px;
+      box-shadow: 0 4px 12px rgba(108, 99, 255, 0.3);
+    }
+
+    .title {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      background: linear-gradient(to right, #FFF, #B0Aeff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .status-card {
+      background-color: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 16px;
+    }
+
+    .status-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+
+    .status-active {
+      background-color: var(--success);
+      box-shadow: 0 0 8px var(--success);
+    }
+
+    .status-inactive {
+      background-color: var(--danger);
+      box-shadow: 0 0 8px var(--danger);
+    }
+
+    .status-text {
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .desc {
+      color: var(--text-secondary);
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    label {
+      display: block;
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    input {
+      width: 100%;
+      box-sizing: border-box;
+      background-color: rgba(22, 22, 42, 0.8);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: white;
+      padding: 8px 12px;
+      font-size: 12px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input:focus {
+      border-color: var(--primary);
+    }
+
+    button {
+      width: 100%;
+      background: linear-gradient(135deg, var(--primary), #8F57FF);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(108, 99, 255, 0.2);
+      transition: opacity 0.2s;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 16px;
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    .footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    .sync-log {
+      max-height: 80px;
+      overflow-y: auto;
+      background-color: rgba(0, 0, 0, 0.2);
+      border-radius: 6px;
+      padding: 6px;
+      margin-top: 8px;
+      font-family: monospace;
+      font-size: 10px;
+      color: var(--text-secondary);
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="logo-container">🦉</div>
+    <div class="title">OwlCoder AI</div>
+  </div>
+
+  <div class="status-card">
+    <div class="status-row">
+      <div id="statusDot" class="status-dot status-inactive"></div>
+      <div id="statusLabel" class="status-text">Disconnected</div>
+    </div>
+    <div id="statusDesc" class="desc">Sync is inactive. Please configure your credentials below to sync solved problems automatically.</div>
+    <div id="syncLog" class="sync-log" style="display: none;"></div>
+  </div>
+
+  <div class="form-group">
+    <label for="backendUrl">Backend Server URL</label>
+    <input type="text" id="backendUrl" placeholder="http://localhost:5000" value="http://localhost:5000">
+  </div>
+
+  <div class="form-group">
+    <label for="token">JWT Token / API Key</label>
+    <input type="password" id="token" placeholder="Paste token from App settings...">
+  </div>
+
+  <button id="saveBtn">Save Settings</button>
+
+  <div class="footer">
+    Go to <a href="#" id="openDashboard">OwlCoder Dashboard</a>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

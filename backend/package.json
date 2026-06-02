@@ -1,0 +1,45 @@
+{
+  "name": "owlcoder-backend",
+  "version": "1.0.0",
+  "description": "OwlCoder AI — Student Growth Operating System Backend",
+  "main": "index.js",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "jest --watchAll=false"
+  },
+  "keywords": [
+    "owlcoder",
+    "dsa",
+    "placement",
+    "coding"
+  ],
+  "author": "OwlCoder AI Team",
+  "license": "MIT",
+  "type": "commonjs",
+  "devDependencies": {
+    "jest": "^30.4.2",
+    "nodemon": "^3.1.14"
+  },
+  "dependencies": {
+    "axios": "^1.16.1",
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.5.2",
+    "google-auth-library": "^10.6.2",
+    "googleapis": "^173.0.0",
+    "helmet": "^8.2.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.6.3",
+    "morgan": "^1.10.1",
+    "node-cron": "^4.2.1",
+    "nodemailer": "^8.0.10",
+    "socket.io": "^4.8.3",
+    "uuid": "^14.0.0"
+  }
+}

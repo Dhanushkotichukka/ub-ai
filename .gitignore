@@ -1,0 +1,39 @@
+# OwlCoder AI Monorepo Git Ignore
+
+# Node.js backend
+backend/node_modules/
+backend/.env
+backend/logs/
+backend/*.log
+backend/npm-debug.log*
+
+# Flutter app
+app/.dart_tool/
+app/.flutter-plugins
+app/.flutter-plugins-dependencies
+app/.metadata
+app/pubspec.lock
+app/build/
+app/*.iml
+app/android/.gradle/
+app/android/local.properties
+app/ios/Flutter/Flutter.podspec
+app/ios/Flutter/Generated.xcconfig
+app/ios/Flutter/flutter_export_environment.sh
+app/ios/Pods/
+app/ios/.symlinks/
+
+# Chrome Extension local cache
+extension/local_config.js
+extension/*.log
+
+# IDEs & System files
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+.DS_Store
+Thumbs.db

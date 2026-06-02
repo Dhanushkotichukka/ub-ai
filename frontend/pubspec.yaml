@@ -1,0 +1,92 @@
+name: owlcoder_ai
+description: "OwlCoder AI — Student Growth Operating System for DSA & Placement Prep"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.4.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # ── Auth ──────────────────────────────────────────────────────────
+  google_sign_in: ^6.2.1
+  flutter_secure_storage: ^9.0.0
+
+  # ── HTTP & API ────────────────────────────────────────────────────
+  dio: ^5.4.3+1
+  http: ^1.2.1
+
+  # ── State Management ──────────────────────────────────────────────
+  flutter_bloc: ^8.1.5
+  equatable: ^2.0.5
+  provider: ^6.1.2
+
+  # ── Navigation ────────────────────────────────────────────────────
+  go_router: ^13.2.0
+
+  # ── Local Storage ─────────────────────────────────────────────────
+  hive_flutter: ^1.1.0
+  shared_preferences: ^2.2.3
+
+  # ── UI ────────────────────────────────────────────────────────────
+  flutter_animate: ^4.5.0
+  shimmer: ^3.0.0
+  google_fonts: ^6.2.1
+  lottie: ^3.1.0
+  cached_network_image: ^3.3.1
+  flutter_svg: ^2.0.10+1
+
+  # ── Charts ────────────────────────────────────────────────────────
+  fl_chart: ^0.68.0
+
+  # ── Calendar & Date ──────────────────────────────────────────────
+  table_calendar: ^3.1.2
+  intl: any
+
+  # ── Rich Text Editor ─────────────────────────────────────────────
+  flutter_quill: 9.2.3
+
+  # ── WebView (for opening problem links on mobile) ─────────────────
+  flutter_inappwebview: ^6.0.0
+
+  # ── Notifications ─────────────────────────────────────────────────
+  flutter_local_notifications: ^17.0.0
+
+  # ── Images & Files ───────────────────────────────────────────────
+  image_picker: ^1.1.2
+
+  # ── Utils ────────────────────────────────────────────────────────
+  share_plus: ^9.0.0
+  url_launcher: ^6.3.0
+  uuid: ^4.4.0
+  confetti: ^0.7.0
+  connectivity_plus: ^6.0.3
+
+  # ── Icons ────────────────────────────────────────────────────────
+  font_awesome_flutter: ^10.7.0
+  iconsax: ^0.0.8
+
+  # ── Markdown ────────────────────────────────────────────────────
+  flutter_markdown: ^0.7.3
+
+  # ── Web (conditional) ───────────────────────────────────────────
+  universal_html: ^2.2.4
+  get_it: ^9.2.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+  bloc_test: ^9.1.5
+  mocktail: ^1.0.3
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/icons/
+    - assets/animations/
+    - assets/data/
