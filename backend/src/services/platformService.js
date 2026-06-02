@@ -239,11 +239,52 @@ const fetchGFGPOTD = async () => {
   }
 };
 
+// ─── HackerRank ──────────────────────────────────────────────────────────────
+const fetchHackerRankStats = async (username) => {
+  if (!username) return null;
+  try {
+    const { data } = await axios.get(`https://www.hackerrank.com/rest/hackers/${username}/scores_elo`, {
+      headers: { 'User-Agent': 'Mozilla/5.0' },
+      timeout: 10000
+    });
+    
+    // The API might return an array or an object depending on the endpoint structure
+    const tracks = Array.isArray(data) ? data : (data.models || []);
+    
+    let totalStars = 0;
+    let problemsSolved = 0;
+    
+    tracks.forEach(track => {
+      // Look for level in contest or practice, or stars if available
+      const level = track.contest?.level || track.level || 0;
+      const stars = track.stars || 0;
+      
+      totalStars += stars;
+      problemsSolved += level * 10; // Approximate from level
+    });
+    
+    // Default to 0 rating since HackerRank doesn't expose a clean global rating on this endpoint
+    return {
+      platform: 'hackerrank',
+      totalSolved: problemsSolved,
+      rating: 0, 
+      rank: '',
+      contestCount: 0,
+      profileUrl: `https://www.hackerrank.com/${username}`,
+      badges: totalStars > 0 ? [`${totalStars} ⭐`] : [],
+    };
+  } catch (err) {
+    console.error(`[HackerRank] Failed to fetch stats for ${username}:`, err.message);
+    return null;
+  }
+};
+
 module.exports = {
   fetchLeetCodeStats,
   fetchCodeforcesStats,
   fetchGFGStats,
   fetchCodeChefStats,
+  fetchHackerRankStats,
   fetchLeetCodePOTD,
   fetchGFGPOTD,
 };

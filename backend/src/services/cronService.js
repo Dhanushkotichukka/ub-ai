@@ -6,6 +6,7 @@ const {
   fetchCodeforcesStats,
   fetchGFGStats,
   fetchCodeChefStats,
+  fetchHackerRankStats,
 } = require('./platformService');
 
 const startCronJobs = () => {
@@ -32,6 +33,7 @@ const startCronJobs = () => {
             { key: 'gfg', fetch: () => fetchGFGStats(user.platforms.gfg) },
             { key: 'codeforces', fetch: () => fetchCodeforcesStats(user.platforms.codeforces) },
             { key: 'codechef', fetch: () => fetchCodeChefStats(user.platforms.codechef) },
+            { key: 'hackerrank', fetch: () => fetchHackerRankStats(user.platforms.hackerrank) },
           ];
 
           for (const p of platforms) {

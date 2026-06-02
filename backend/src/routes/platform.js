@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { protect } = require('../middleware/auth');
 const PlatformStats = require('../models/PlatformStats');
-const { fetchLeetCodeStats, fetchCodeforcesStats, fetchGFGStats, fetchCodeChefStats, fetchLeetCodePOTD, fetchGFGPOTD } = require('../services/platformService');
+const { fetchLeetCodeStats, fetchCodeforcesStats, fetchGFGStats, fetchCodeChefStats, fetchHackerRankStats, fetchLeetCodePOTD, fetchGFGPOTD } = require('../services/platformService');
 
 router.use(protect);
 
@@ -26,6 +26,7 @@ router.post('/sync', async (req, res, next) => {
       { key: 'gfg', fn: () => fetchGFGStats(platforms.gfg) },
       { key: 'codeforces', fn: () => fetchCodeforcesStats(platforms.codeforces) },
       { key: 'codechef', fn: () => fetchCodeChefStats(platforms.codechef) },
+      { key: 'hackerrank', fn: () => fetchHackerRankStats(platforms.hackerrank) },
     ];
 
     for (const { key, fn } of fetchers) {
