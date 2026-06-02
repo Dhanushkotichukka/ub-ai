@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Save button click
   saveBtn.addEventListener('click', () => {
     const token = tokenInput.value.trim();
-    const backendUrl = backendUrlInput.value.trim() || 'http://localhost:5000';
+    const backendUrl = backendUrlInput.value.trim() || 'https://ub-ai.onrender.com';
 
     chrome.storage.local.set({ token, backendUrl }, () => {
       if (token) {
@@ -56,9 +56,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // Open Dashboard Link
   openDashboardLink.addEventListener('click', (e) => {
     e.preventDefault();
-    const backendUrl = backendUrlInput.value.trim() || 'http://localhost:5000';
+    const backendUrl = backendUrlInput.value.trim() || 'https://ub-ai.onrender.com';
     // Redirect to web client URL if configured, fallback to standard web server/port
-    chrome.tabs.create({ url: 'http://localhost:54321/home' }); // matches Flutter Web dev port or local page
+    chrome.tabs.create({ url: 'https://ubaitracker.vercel.app' }); // matches Flutter Web dev port or local page
   });
 
   // Listener for successful synchronization reports
