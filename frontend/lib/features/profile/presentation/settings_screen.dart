@@ -5,6 +5,7 @@ import '../../../shared/models/user_model.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/services/api_service.dart';
 import '../../../core/di/service_locator.dart';
+import '../../home/bloc/home_bloc.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -122,6 +123,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     try {
       context.read<AuthBloc>().add(AuthPlatformsUpdated(handles));
+      context.read<HomeBloc>().add(HomeSyncRequested()); // ACTUALLY TRIGGER SYNC
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Platform usernames updated! Syncing in progress... ⏳'), backgroundColor: AppColors.success),
