@@ -16,7 +16,7 @@ class AppConstants {
   // Base URL — change to your deployed backend URL
   static const baseUrl = 'https://ub-ai.onrender.com/api/v1'; // Production Render API
 
-  static const appName = 'OwlCoder AI';
+  static const appName = 'UB AI';
   static const appTagline = 'Track • Practice • Learn • Plan • Crack Placements';
 
   static const List<String> topics = [

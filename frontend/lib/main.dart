@@ -32,11 +32,11 @@ void main() async {
   // Initialize service locator (GetIt)
   await setupServiceLocator();
 
-  runApp(const OwlCoderApp());
+  runApp(const UbAiApp());
 }
 
-class OwlCoderApp extends StatelessWidget {
-  const OwlCoderApp({super.key});
+class UbAiApp extends StatelessWidget {
+  const UbAiApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +54,7 @@ class OwlCoderApp extends StatelessWidget {
         builder: (context, authState) {
           final isDark = authState.settings?.darkMode ?? true;
           return MaterialApp.router(
-            title: 'OwlCoder AI',
+            title: 'UB AI',
             debugShowCheckedModeBanner: false,
             theme: AppTheme.light,
             darkTheme: AppTheme.dark,

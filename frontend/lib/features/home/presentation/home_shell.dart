@@ -145,13 +145,12 @@ class _WebLayout extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(children: [
-                Container(
+                SizedBox(
                   width: 36, height: 36,
-                  decoration: BoxDecoration(gradient: AppColors.primaryGradient, borderRadius: BorderRadius.circular(10)),
-                  child: const Center(child: Text('🦉', style: TextStyle(fontSize: 20))),
+                  child: Image.asset('assets/images/ub_ai_mascot.png', fit: BoxFit.contain),
                 ),
                 const SizedBox(width: 10),
-                Text('OwlCoder AI', style: TextStyle(color: isDark ? Colors.white : AppColors.lightText, fontWeight: FontWeight.w700, fontSize: 16)),
+                Text('UB AI', style: TextStyle(color: isDark ? Colors.white : AppColors.lightText, fontWeight: FontWeight.w700, fontSize: 16)),
               ]),
             ),
             const SizedBox(height: 24),

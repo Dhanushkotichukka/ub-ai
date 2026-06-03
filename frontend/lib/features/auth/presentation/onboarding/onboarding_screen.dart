@@ -125,9 +125,16 @@ class _WelcomeStep extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-        const Text('🦉', style: TextStyle(fontSize: 80)).animate().scale(duration: 600.ms, curve: Curves.elasticOut),
+        SizedBox(
+          width: 120, height: 120,
+          child: Image.asset('assets/images/ub_ai_mascot.png', fit: BoxFit.contain),
+        ).animate(onPlay: (c) => c.repeat())
+          .moveY(begin: 0, end: -10, duration: 1800.ms, curve: Curves.easeInOut)
+          .then()
+          .moveY(begin: -10, end: 0, duration: 1800.ms, curve: Curves.easeInOut)
+          .scale(begin: const Offset(0.5, 0.5), end: const Offset(1.0, 1.0), duration: 600.ms, curve: Curves.elasticOut),
         const SizedBox(height: 32),
-        Text('Welcome to\nOwlCoder AI', textAlign: TextAlign.center, style: Theme.of(context).textTheme.displaySmall?.copyWith(color: Colors.white, fontWeight: FontWeight.w800)).animate().fadeIn(delay: 200.ms),
+        Text('Welcome to\nUB AI', textAlign: TextAlign.center, style: Theme.of(context).textTheme.displaySmall?.copyWith(color: Colors.white, fontWeight: FontWeight.w800)).animate().fadeIn(delay: 200.ms),
         const SizedBox(height: 16),
         const Text('Your coding journey starts now.\nTrack DSA, crack placements, and grow every day.', textAlign: TextAlign.center, style: TextStyle(color: AppColors.darkTextSecondary, fontSize: 16)).animate().fadeIn(delay: 400.ms),
         const SizedBox(height: 48),
@@ -295,7 +302,7 @@ class _ReadyStep extends StatelessWidget {
         const SizedBox(height: 32),
         Text('You\'re all set!', style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: Colors.white, fontWeight: FontWeight.w800)).animate().fadeIn(delay: 200.ms),
         const SizedBox(height: 12),
-        const Text('Your OwlCoder AI profile is ready.\nStart solving, tracking, and leveling up!', textAlign: TextAlign.center, style: TextStyle(color: AppColors.darkTextSecondary, fontSize: 16)).animate().fadeIn(delay: 400.ms),
+        const Text('Your UB AI profile is ready.\nStart solving, tracking, and leveling up!', textAlign: TextAlign.center, style: TextStyle(color: AppColors.darkTextSecondary, fontSize: 16)).animate().fadeIn(delay: 400.ms),
         const SizedBox(height: 48),
         OwlButton(label: 'Let\'s Go! 🚀', onTap: onComplete).animate().fadeIn(delay: 600.ms),
       ]),

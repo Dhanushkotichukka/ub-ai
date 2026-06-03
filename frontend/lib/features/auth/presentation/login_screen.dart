@@ -57,21 +57,27 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: [
                     const SizedBox(height: 40),
 
-                    // ─── Logo ──────────────────────────────────────────
+                    // ─── Logo ──────────────────────────────────────────────
                     Center(
                       child: Column(
                         children: [
                           Container(
-                            width: 80, height: 80,
+                            width: 100, height: 100,
                             decoration: BoxDecoration(
-                              gradient: AppColors.primaryGradient,
+                              color: Colors.transparent,
                               borderRadius: BorderRadius.circular(22),
-                              boxShadow: AppShadow.glow,
                             ),
-                            child: const Center(child: Text('🦉', style: TextStyle(fontSize: 42))),
-                          ).animate().scale(duration: 500.ms, curve: Curves.elasticOut),
+                            child: Image.asset(
+                              'assets/images/ub_ai_mascot.png',
+                              fit: BoxFit.contain,
+                            ),
+                          ).animate(onPlay: (c) => c.repeat())
+                            .moveY(begin: 0, end: -8, duration: 1800.ms, curve: Curves.easeInOut)
+                            .then()
+                            .moveY(begin: -8, end: 0, duration: 1800.ms, curve: Curves.easeInOut)
+                            .scale(duration: 500.ms, curve: Curves.elasticOut),
                           const SizedBox(height: 20),
-                          Text('OwlCoder AI',
+                          Text('UB AI',
                             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                               color: Colors.white, fontWeight: FontWeight.w800,
                             )).animate().fadeIn(delay: 200.ms),

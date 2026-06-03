@@ -102,10 +102,10 @@ router.post('/register', async (req, res, next) => {
     try {
       await sendEmail(
         user.email,
-        'Verify your OwlCoder account',
+        'Verify your UB AI account',
         `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; text-align: center; background-color: #1a1a2e; color: #fff; border-radius: 12px;">
-          <h1 style="color: #4e44ce;">Welcome to OwlCoder AI!</h1>
+          <h1 style="color: #4e44ce;">Welcome to UB AI!</h1>
           <p style="font-size: 16px; margin-bottom: 30px;">Use the OTP below to verify your email address.</p>
           <div style="background-color: rgba(255, 255, 255, 0.1); padding: 20px; border-radius: 8px; font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #fff;">
             ${otp}
@@ -171,11 +171,11 @@ router.post('/verify-otp', async (req, res, next) => {
     try {
       await sendEmail(
         email,
-        '🚀 Welcome to OwlCoder AI!',
+        '🚀 Welcome to UB AI!',
         `
           <div style="font-family: Inter, sans-serif; max-width: 500px; margin: 0 auto; color: #333;">
             <h2 style="color: #6C63FF;">You are all set! 🎉</h2>
-            <p>Welcome to <strong>OwlCoder AI</strong>, ${user.name || 'Developer'}!</p>
+            <p>Welcome to <strong>UB AI</strong>, ${user.name || 'Developer'}!</p>
             <p>Your email has been successfully verified. You can now log in and start tracking your DSA journey across all major platforms, get personalized AI coaching, and level up your skills.</p>
             <p>Happy Coding! 🦉</p>
           </div>

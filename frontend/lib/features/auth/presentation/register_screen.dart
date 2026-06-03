@@ -48,7 +48,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               key: _formKey,
               child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
                 const SizedBox(height: 20),
-                Center(child: Text('Join OwlCoder AI 🦉', style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: Colors.white, fontWeight: FontWeight.w700))).animate().fadeIn(),
+                Center(child: Text('Join UB AI 🤖', style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: Colors.white, fontWeight: FontWeight.w700))).animate().fadeIn(),
                 const SizedBox(height: 8),
                 const Center(child: Text('Start your coding journey today', style: TextStyle(color: AppColors.darkTextSecondary))).animate().fadeIn(delay: 100.ms),
                 const SizedBox(height: 32),

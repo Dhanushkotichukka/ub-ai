@@ -219,7 +219,7 @@ class _AnalyticsView extends StatelessWidget {
                   children: [
                     CircularProgressIndicator(color: AppColors.primary),
                     SizedBox(height: 16),
-                    Text('🦉 AI is analyzing your progress...', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                    Text('🤖 AI is analyzing your progress...', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                   ],
                 ),
               ),

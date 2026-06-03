@@ -30,23 +30,23 @@ class SplashScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Owl logo
+                // UB AI robot mascot
                 Container(
-                  width: 100, height: 100,
+                  width: 110, height: 110,
                   decoration: BoxDecoration(
-                    gradient: AppColors.primaryGradient,
+                    color: Colors.transparent,
                     borderRadius: BorderRadius.circular(28),
-                    boxShadow: AppShadow.glow,
                   ),
-                  child: const Center(
-                    child: Text('🦉', style: TextStyle(fontSize: 52)),
+                  child: Image.asset(
+                    'assets/images/ub_ai_mascot.png',
+                    fit: BoxFit.contain,
                   ),
                 ).animate().scale(duration: 600.ms, curve: Curves.elasticOut),
 
                 const SizedBox(height: 24),
 
                 Text(
-                  'OwlCoder AI',
+                  'UB AI',
                   style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w800,
