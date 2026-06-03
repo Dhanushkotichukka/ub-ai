@@ -6,23 +6,24 @@ const nodemailer = require('nodemailer');
 const User = require('../models/User');
 const { generateTokens } = require('../middleware/auth');
 const { awardXP } = require('../services/gamificationService');
+const sgMail = require('@sendgrid/mail');
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-// ─── Helper: create mailer transporter ───────────────────────────
-const getTransporter = () => {
-  if (!process.env.EMAIL_HOST || !process.env.EMAIL_USER) {
-    throw new Error('Email configuration is missing in environment variables');
+const sendEmail = async (to, subject, html) => {
+  if (!process.env.SENDGRID_API_KEY) {
+    throw new Error('SendGrid API Key is missing in environment variables');
   }
-  return nodemailer.createTransport({
-    host: process.env.EMAIL_HOST,
-    port: parseInt(process.env.EMAIL_PORT) || 587,
-    secure: parseInt(process.env.EMAIL_PORT) === 465,
-    auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
-    connectionTimeout: 5000, // 5 seconds
-    greetingTimeout: 5000,
-    socketTimeout: 5000,
-  });
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+  
+  const msg = {
+    to,
+    from: process.env.EMAIL_FROM || 'testusercreatoros@gmail.com',
+    subject,
+    html,
+  };
+  
+  await sgMail.send(msg);
 };
 
 // ─── Helper: send token response ─────────────────────────────────
@@ -97,22 +98,22 @@ router.post('/register', async (req, res, next) => {
 
     const user = await User.create({ email, password, name, emailOtp: otp, emailOtpExpiry: otpExpiry });
 
-    // Send verification email
+    // Send OTP via SendGrid
     try {
-      const transporter = getTransporter();
-      await transporter.sendMail({
-        from: process.env.EMAIL_FROM,
-        to: email,
-        subject: '🦉 Verify your OwlCoder AI account',
-        html: `
-          <div style="font-family: Inter, sans-serif; max-width: 500px; margin: 0 auto;">
-            <h2 style="color: #6C63FF;">Welcome to OwlCoder AI! 🦉</h2>
-            <p>Your email verification code is:</p>
-            <div style="font-size: 36px; font-weight: bold; letter-spacing: 8px; color: #6C63FF; padding: 20px; background: #f0f0f8; border-radius: 12px; text-align: center;">${otp}</div>
-            <p style="color: #666;">This code expires in 10 minutes.</p>
+      await sendEmail(
+        user.email,
+        'Verify your OwlCoder account',
+        `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; text-align: center; background-color: #1a1a2e; color: #fff; border-radius: 12px;">
+          <h1 style="color: #4e44ce;">Welcome to OwlCoder AI!</h1>
+          <p style="font-size: 16px; margin-bottom: 30px;">Use the OTP below to verify your email address.</p>
+          <div style="background-color: rgba(255, 255, 255, 0.1); padding: 20px; border-radius: 8px; font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #fff;">
+            ${otp}
           </div>
-        `,
-      });
+          <p style="font-size: 14px; margin-top: 30px; color: #aaa;">This code expires in 10 minutes.</p>
+        </div>
+        `
+      );
     } catch (mailErr) {
       console.error('Email send failed:', mailErr.message);
       // Delete the unverified user since we couldn't send the OTP
