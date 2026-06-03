@@ -35,9 +35,8 @@ class AuthRepository {
   }
 
   // ─── Email Register ──────────────────────────────────────────────
-  Future<UserModel> registerWithEmail(String name, String email, String password) async {
-    final res = await _api.post('/auth/register', data: {'name': name, 'email': email, 'password': password});
-    return _handleAuthResponse(res.data);
+  Future<void> registerWithEmail(String name, String email, String password) async {
+    await _api.post('/auth/register', data: {'name': name, 'email': email, 'password': password});
   }
 
   // ─── Verify OTP ──────────────────────────────────────────────────
