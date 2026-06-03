@@ -83,14 +83,35 @@ class NotesRepository {
   final ApiService _api;
   NotesRepository(this._api);
 
-  Future<List<Map<String, dynamic>>> getNotes({String? folder, String? search}) async {
-    final res = await _api.get('/notes', params: {if (folder != null) 'folder': folder, if (search != null) 'search': search});
+  Future<List<Map<String, dynamic>>> getNotes({String? folder, String? search, String? type, String? collection, bool? dueReview}) async {
+    final res = await _api.get('/notes', params: {
+      if (folder != null) 'folder': folder,
+      if (search != null) 'search': search,
+      if (type != null) 'type': type,
+      if (collection != null) 'collection': collection,
+      if (dueReview == true) 'dueReview': 'true',
+    });
     return List<Map<String, dynamic>>.from(res.data['notes']);
   }
 
   Future<Map<String, dynamic>> getNote(String id) async {
     final res = await _api.get('/notes/$id');
     return res.data['note'];
+  }
+
+  Future<Map<String, dynamic>> getDailyNote() async {
+    final res = await _api.get('/notes/daily');
+    return res.data['note'];
+  }
+
+  Future<List<Map<String, dynamic>>> getRevisionNotes() async {
+    final res = await _api.get('/notes/revision');
+    return List<Map<String, dynamic>>.from(res.data['notes']);
+  }
+
+  Future<Map<String, dynamic>> getStats() async {
+    final res = await _api.get('/notes/stats');
+    return res.data['stats'];
   }
 
   Future<Map<String, dynamic>> createNote(Map<String, dynamic> data) async {
@@ -109,4 +130,46 @@ class NotesRepository {
     final res = await _api.get('/notes/folders');
     return List<Map<String, dynamic>>.from(res.data['folders']);
   }
+
+  // ─── AI Features ──────────────────────────────────────────────
+  Future<String> aiChat(String noteId, String message) async {
+    final res = await _api.post('/notes/$noteId/ai-chat', data: {'message': message});
+    return res.data['reply'];
+  }
+
+  Future<Map<String, dynamic>> autoTag(String noteId) async {
+    final res = await _api.post('/notes/$noteId/auto-tag');
+    return {'title': res.data['title'], 'tags': res.data['tags']};
+  }
+
+  Future<String> generateSummary(String noteId) async {
+    final res = await _api.post('/notes/$noteId/summary');
+    return res.data['aiSummary'];
+  }
+
+  Future<List<Map<String, dynamic>>> generateQuiz(String noteId, {int count = 5}) async {
+    final res = await _api.post('/notes/$noteId/quiz', data: {'questionCount': count});
+    return List<Map<String, dynamic>>.from(res.data['quiz']);
+  }
+
+  Future<String> generateRoadmap(String noteId) async {
+    final res = await _api.post('/notes/$noteId/roadmap');
+    return res.data['roadmap'];
+  }
+
+  Future<List<Map<String, dynamic>>> generateFlashcards(String noteId, {int count = 7}) async {
+    final res = await _api.post('/notes/$noteId/flashcards', data: {'count': count});
+    return List<Map<String, dynamic>>.from(res.data['flashcards']);
+  }
+
+  Future<Map<String, dynamic>> scheduleRevision(String noteId) async {
+    final res = await _api.post('/notes/$noteId/revision-schedule');
+    return res.data;
+  }
+
+  Future<List<Map<String, dynamic>>> semanticSearch(String query) async {
+    final res = await _api.post('/notes/semantic-search', data: {'query': query});
+    return List<Map<String, dynamic>>.from(res.data['notes']);
+  }
 }
+

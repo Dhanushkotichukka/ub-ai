@@ -108,7 +108,8 @@ class AppRouter {
             path: '/notes/editor',
             builder: (_, state) {
               final noteId = state.uri.queryParameters['id'];
-              return NoteEditorScreen(noteId: noteId);
+              final noteType = state.uri.queryParameters['type'];
+              return NoteEditorScreen(noteId: noteId, initialNoteType: noteType);
             },
           ),
           GoRoute(path: '/contests', builder: (_, __) => const ContestsScreen()),
