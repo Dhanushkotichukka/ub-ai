@@ -178,10 +178,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final user = await _repo.loginWithEmail(event.email, event.password);
       emit(state.copyWith(status: AuthStatus.authenticated, user: user));
     } catch (e) {
-      if (e.toString().contains('requiresVerification')) {
+      final errorMsg = _parseError(e);
+      if (errorMsg == 'requiresVerification') {
         emit(state.copyWith(status: AuthStatus.error, error: 'Please verify your email first', requiresVerification: true, unverifiedEmail: event.email));
       } else {
-        emit(state.copyWith(status: AuthStatus.error, error: _parseError(e)));
+        emit(state.copyWith(status: AuthStatus.error, error: errorMsg));
       }
     }
   }
