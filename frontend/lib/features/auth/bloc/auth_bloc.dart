@@ -200,8 +200,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Future<void> _onVerifyOtp(AuthVerifyOtpRequested event, Emitter<AuthState> emit) async {
     emit(state.copyWith(status: AuthStatus.loading, error: null));
     try {
-      await _repo.verifyOtp(event.email, event.otp);
-      emit(state.copyWith(status: AuthStatus.unauthenticated, requiresVerification: false, error: 'Verified! Please log in.'));
+      final user = await _repo.verifyOtp(event.email, event.otp);
+      emit(state.copyWith(status: AuthStatus.authenticated, user: user, requiresVerification: false));
     } catch (e) {
       emit(state.copyWith(status: AuthStatus.error, error: _parseError(e), requiresVerification: true));
     }

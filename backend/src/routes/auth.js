@@ -86,8 +86,9 @@ router.post('/register', async (req, res, next) => {
     if (!email || !password || !name) {
       return res.status(400).json({ success: false, message: 'Name, email, and password are required' });
     }
-    if (password.length < 8) {
-      return res.status(400).json({ success: false, message: 'Password must be at least 8 characters' });
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!passwordRegex.test(password)) {
+      return res.status(400).json({ success: false, message: 'Password must be at least 8 characters, include an uppercase letter, a lowercase letter, a number, and a special character' });
     }
 
     const exists = await User.findOne({ email });
@@ -185,7 +186,7 @@ router.post('/verify-otp', async (req, res, next) => {
       console.error('Welcome email failed:', mailErr.message);
     }
 
-    res.json({ success: true, message: 'Email verified successfully' });
+    sendTokenResponse(user, 200, res);
   } catch (err) {
     next(err);
   }
@@ -231,8 +232,9 @@ router.post('/forgot-password', async (req, res, next) => {
 router.post('/reset-password', async (req, res, next) => {
   try {
     const { email, otp, newPassword } = req.body;
-    if (!newPassword || newPassword.length < 8) {
-      return res.status(400).json({ success: false, message: 'Password must be at least 8 characters' });
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!newPassword || !passwordRegex.test(newPassword)) {
+      return res.status(400).json({ success: false, message: 'Password must be at least 8 characters, include an uppercase letter, a lowercase letter, a number, and a special character' });
     }
 
     const user = await User.findOne({ email }).select('+emailOtp +emailOtpExpiry +password');

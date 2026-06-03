@@ -40,8 +40,9 @@ class AuthRepository {
   }
 
   // ─── Verify OTP ──────────────────────────────────────────────────
-  Future<void> verifyOtp(String email, String otp) async {
-    await _api.post('/auth/verify-otp', data: {'email': email, 'otp': otp});
+  Future<UserModel> verifyOtp(String email, String otp) async {
+    final res = await _api.post('/auth/verify-otp', data: {'email': email, 'otp': otp});
+    return _handleAuthResponse(res.data);
   }
 
   // ─── Forgot Password ─────────────────────────────────────────────

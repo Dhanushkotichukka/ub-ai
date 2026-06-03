@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -127,13 +128,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       ).animate().fadeIn(delay: 550.ms),
                     ] else ...[
                       // ─── Email / Password Form ─────────────────────
-                      Form(
-                        key: _formKey,
-                        child: Column(children: [
+                      AutofillGroup(
+                        child: Form(
+                          key: _formKey,
+                          child: Column(children: [
                           TextFormField(
                             controller: _emailCtrl,
                             keyboardType: TextInputType.emailAddress,
                             style: const TextStyle(color: Colors.white),
+                            autofillHints: const [AutofillHints.email],
                             decoration: const InputDecoration(
                               labelText: 'Email',
                               prefixIcon: Icon(Icons.email_outlined, color: AppColors.primary),
@@ -145,6 +148,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             controller: _passCtrl,
                             obscureText: _obscure,
                             style: const TextStyle(color: Colors.white),
+                            autofillHints: const [AutofillHints.password],
                             decoration: InputDecoration(
                               labelText: 'Password',
                               prefixIcon: const Icon(Icons.lock_outline, color: AppColors.primary),
@@ -169,6 +173,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             loading: isLoading,
                             onTap: () {
                               if (_formKey.currentState!.validate()) {
+                                TextInput.finishAutofillContext();
                                 context.read<AuthBloc>().add(
                                   AuthEmailLoginRequested(_emailCtrl.text.trim(), _passCtrl.text),
                                 );
@@ -180,7 +185,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             onPressed: () => setState(() => _isEmailMode = false),
                             child: const Text('← Back', style: TextStyle(color: AppColors.darkTextSecondary)),
                           ),
-                        ]),
+                          ]),
+                        ),
                       ).animate().fadeIn(duration: 300.ms),
                     ],
 

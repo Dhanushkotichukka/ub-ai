@@ -121,7 +121,13 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                 onPressed: () => setState(() => _obscure = !_obscure),
                               ),
                             ),
-                            validator: (v) => v!.length < 8 ? 'Password must be at least 8 characters' : null,
+                            validator: (v) {
+                              if (v == null || v.isEmpty) return 'Password required';
+                              if (!RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$').hasMatch(v)) {
+                                return 'Min 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special char';
+                              }
+                              return null;
+                            },
                           ),
                           const SizedBox(height: 32),
                           OwlButton(

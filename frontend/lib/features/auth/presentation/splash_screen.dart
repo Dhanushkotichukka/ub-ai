@@ -13,11 +13,7 @@ class SplashScreen extends StatelessWidget {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state.status == AuthStatus.authenticated) {
-          if (!(state.user?.onboardingComplete ?? true)) {
-            context.go('/onboarding');
-          } else {
-            context.go('/home');
-          }
+          context.go('/home');
         } else if (state.status == AuthStatus.unauthenticated) {
           context.go('/auth/login');
         }
