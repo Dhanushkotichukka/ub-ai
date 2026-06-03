@@ -32,11 +32,11 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.error!), backgroundColor: AppColors.danger),
           );
-        } else if (state.status == AuthStatus.unauthenticated && !state.requiresVerification && state.error != null && state.error!.contains('Verified')) {
+        } else if (state.status == AuthStatus.authenticated) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.error!), backgroundColor: AppColors.success),
+            const SnackBar(content: Text('Email verified successfully!'), backgroundColor: AppColors.success),
           );
-          context.go('/auth/login');
+          context.go('/home');
         }
       },
       builder: (context, state) {
