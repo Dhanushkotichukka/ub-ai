@@ -169,20 +169,18 @@ router.post('/verify-otp', async (req, res, next) => {
 
     // Send Welcome Email
     try {
-      const transporter = getTransporter();
-      await transporter.sendMail({
-        from: process.env.EMAIL_FROM,
-        to: email,
-        subject: '🚀 Welcome to OwlCoder AI!',
-        html: `
+      await sendEmail(
+        email,
+        '🚀 Welcome to OwlCoder AI!',
+        `
           <div style="font-family: Inter, sans-serif; max-width: 500px; margin: 0 auto; color: #333;">
             <h2 style="color: #6C63FF;">You are all set! 🎉</h2>
             <p>Welcome to <strong>OwlCoder AI</strong>, ${user.name || 'Developer'}!</p>
             <p>Your email has been successfully verified. You can now log in and start tracking your DSA journey across all major platforms, get personalized AI coaching, and level up your skills.</p>
             <p>Happy Coding! 🦉</p>
           </div>
-        `,
-      });
+        `
+      );
     } catch (mailErr) {
       console.error('Welcome email failed:', mailErr.message);
     }
@@ -206,20 +204,18 @@ router.post('/forgot-password', async (req, res, next) => {
     await user.save();
 
     try {
-      const transporter = getTransporter();
-      await transporter.sendMail({
-        from: process.env.EMAIL_FROM,
-        to: email,
-        subject: '🔐 Reset your OwlCoder AI password',
-        html: `
+      await sendEmail(
+        email,
+        '🔐 Reset your OwlCoder AI password',
+        `
           <div style="font-family: Inter, sans-serif; max-width: 500px; margin: 0 auto;">
             <h2 style="color: #6C63FF;">Password Reset 🔐</h2>
             <p>Your OTP to reset your password:</p>
             <div style="font-size: 36px; font-weight: bold; letter-spacing: 8px; color: #6C63FF; padding: 20px; background: #f0f0f8; border-radius: 12px; text-align: center;">${otp}</div>
             <p style="color: #666;">Expires in 10 minutes. If you didn't request this, ignore this email.</p>
           </div>
-        `,
-      });
+        `
+      );
     } catch (mailErr) {
       console.error('Reset email failed:', mailErr.message);
       return res.status(500).json({ success: false, message: 'Failed to send reset email. Please try again later.' });
