@@ -25,6 +25,9 @@ const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
 
+// Trust the first proxy (required for Render)
+app.set('trust proxy', 1);
+
 // ─── Security ────────────────────────────────────────────────────
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 
